@@ -49,7 +49,7 @@ func createPortRange(portRange []string) ([]int, error){
         }
         return []int{port}, nil
     }
-
+    // Convert string cli input to integers for building lists
     range_start, err := strconv.Atoi(portRange[0])
     if err != nil{
         fmt.Println(err)
@@ -71,7 +71,7 @@ func createPortRange(portRange []string) ([]int, error){
 }
 
 func main(){
-    // Get UP/CIDR range from args
+    // Get IP/CIDR range from args
     if len(os.Args) < 3{
         fmt.Println("Usage portscanner <IP or IP range> <port or port range>")
         fmt.Println("Example: portscanner 192.168.2.3 1-1024")
@@ -98,10 +98,13 @@ func main(){
       
     for _, target := range ips{
         for _, port := range portList{
+            // Convert string ports Ints back to strings to handles connection and printing status
             conn, err := net.DialTimeout("tcp", target + ":" + strconv.Itoa(port), time.Duration(1) * time.Second)
             if err != nil{
                 fmt.Println(err)
             }
+            
+              // Convert string ports Ints back to strings to handles connection and printing status
             if conn == nil{
                 fmt.Println("Could not connect to " + target + " on port " + strconv.Itoa(port))
             }else{
