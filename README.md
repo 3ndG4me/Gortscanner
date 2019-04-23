@@ -19,6 +19,7 @@ Instead of "po" in "port" you get "go" for "gort", because that's how that works
 
 ## TODO:
 - Add the option to parse a list of ports i.e. `gortscanner <IP> 22, 23, 445`
+- Add the option to parse a list of IPs i.e. `portscanner.py 192.168.0.1, 192.168.0.2, 192.168.0.3 <port(s)>`
 - Add timeout flag to change the length of timeouts between scans
 
 
