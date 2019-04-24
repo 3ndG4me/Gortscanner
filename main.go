@@ -108,7 +108,7 @@ func main(){
             if conn == nil{
                 fmt.Println("Could not connect to " + target + " on port " + strconv.Itoa(port))
             }else{
-                fmt.Println("Connected to" + target + " on port " + strconv.Itoa(port))
+                fmt.Println("Connected to " + target + " on port " + strconv.Itoa(port))
                 fmt.Println(conn)
             }
         }
