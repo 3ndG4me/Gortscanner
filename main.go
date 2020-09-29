@@ -70,6 +70,15 @@ func createPortRange(portRange []string) ([]int, error){
 
 }
 
+
+func convertPortListToString(portList []int) ([]string, error){
+    var stringPortList []string
+    for _, port := range portList{
+        stringPortList = append(stringPortList, strconv.Itoa(port))
+    }
+    return stringPortList, nil
+}
+
 func main(){
     // Get IP/CIDR range from args
     if len(os.Args) < 3{
@@ -95,7 +104,10 @@ func main(){
     if len(ips) == 0 {
         ips = append(ips, ip)
     }
-      
+    
+    var portOutPut []int
+
+
     for _, target := range ips{
         for _, port := range portList{
             // Convert string ports Ints back to strings to handles connection and printing status
@@ -109,8 +121,11 @@ func main(){
                 fmt.Println("Could not connect to " + target + " on port " + strconv.Itoa(port))
             }else{
                 fmt.Println("Connected to " + target + " on port " + strconv.Itoa(port))
+                portOutPut = append(portOutPut, port)
             }
         }
+        stringPortOutput, _ := convertPortListToString(portOutPut)
+        fmt.Println("Host: " + target + " Ports: " + strings.Join(stringPortOutput, "/TCP, ") + "/TCP")
     }
 
 }
