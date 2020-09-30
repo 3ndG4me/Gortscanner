@@ -6,6 +6,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -25,7 +26,7 @@ func parseIPRange(cidr string) ([]string, error) {
 	return ips[1 : len(ips)-1], nil
 }
 
-// Function to increment the IP for the for llop in the CIDR range parser
+// Function to increment the IP for the for loop in the CIDR range parser
 
 func inc(ip net.IP) {
 	for j := len(ip) - 1; j >= 0; j-- {
@@ -74,6 +75,34 @@ func convertPortListToString(portList []int) ([]string, error) {
 	return stringPortList, nil
 }
 
+func doScan(target string, portList []int, wg *sync.WaitGroup) {
+
+	defer wg.Done()
+
+	var portOutPut []int
+
+	for _, port := range portList {
+		// Convert string ports Ints back to strings to handles connection and printing status
+		conn, err := net.DialTimeout("tcp", target+":"+strconv.Itoa(port), time.Duration(1)*time.Second)
+		if err != nil {
+			fmt.Println(err)
+		}
+		// Convert string ports Ints back to strings to handles connection and printing status
+		if conn == nil {
+			fmt.Println("Could not connect to " + target + " on port " + strconv.Itoa(port))
+		} else {
+			fmt.Println("Connected to " + target + " on port " + strconv.Itoa(port))
+			portOutPut = append(portOutPut, port)
+		}
+	}
+	stringPortOutput, _ := convertPortListToString(portOutPut)
+	if portOutPut != nil {
+		fmt.Println("Host: " + target + " Ports: " + strings.Join(stringPortOutput, "/TCP, ") + "/TCP")
+	}
+	portOutPut = nil
+
+}
+
 func main() {
 	// Get IP/CIDR range from args
 	if len(os.Args) < 3 {
@@ -100,29 +129,12 @@ func main() {
 		ips = append(ips, ip)
 	}
 
-	var portOutPut []int
-
+	// Spawn Goroutine per target and let the scans run async
+	var wg sync.WaitGroup
 	for _, target := range ips {
-		for _, port := range portList {
-			// Convert string ports Ints back to strings to handles connection and printing status
-			conn, err := net.DialTimeout("tcp", target+":"+strconv.Itoa(port), time.Duration(1)*time.Second)
-			if err != nil {
-				fmt.Println(err)
-			}
-
-			// Convert string ports Ints back to strings to handles connection and printing status
-			if conn == nil {
-				fmt.Println("Could not connect to " + target + " on port " + strconv.Itoa(port))
-			} else {
-				fmt.Println("Connected to " + target + " on port " + strconv.Itoa(port))
-				portOutPut = append(portOutPut, port)
-			}
-		}
-		stringPortOutput, _ := convertPortListToString(portOutPut)
-		if portOutPut != nil {
-			fmt.Println("Host: " + target + " Ports: " + strings.Join(stringPortOutput, "/TCP, ") + "/TCP")
-		}
-		portOutPut = nil
+		wg.Add(1)
+		go doScan(target, portList, &wg)
 	}
+	wg.Wait()
 
 }
