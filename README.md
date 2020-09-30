@@ -17,7 +17,7 @@ Instead of "po" in "port" you get "go" for "gort", because that's how that works
 - Cross platform, makes it easy to drop a binary and not deal with python dependencies
 - Significantly faster than the python version. Idk by how much, but it's pretty obvious side by side even tweaking delays.
 - Better output than version 1.0. Now displays `Host: <host> Ports: <Port/TCP>` for easier parsing.
-    - Try `./gortscanner <host(s)> <port(s)> | tee scan.out | grep Host` for a nice easy to cut up report.
+    - Try `./gortscanner <host(s)> <port(s)> | grep “Host:” | tee scan.out` for a nice easy to cut up report.
 
 ## TODO:
 - Add the option to parse a list of ports i.e. `gortscanner <IP> 22, 23, 445`
@@ -26,7 +26,7 @@ Instead of "po" in "port" you get "go" for "gort", because that's how that works
 
 
 ## Build:
-- `go build main.go -o gortscanner`
+- `go build -o gortscanner main.go`
 
 ## Usage:
 - `gortscanner <IP> <port>`
