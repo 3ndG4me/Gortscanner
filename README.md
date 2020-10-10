@@ -15,7 +15,7 @@ Instead of "po" in "port" you get "go" for "gort", because that's how that works
 - Can parse port ranges and scan multiple ports Example: `gortscanner 192.168.0.1 1-1024`
 - Any combiniation of the above 3
 - Cross platform, makes it easy to drop a binary and not deal with python dependencies
-- Significantly faster than the python version. Idk by how much, but it's pretty obvious side by side even tweaking delays.
+- Significantly faster than the python version. Idk by how much, but it's pretty obvious side by side even tweaking delays, especially thanks to multithreaded goroutines as of version 5.0.
 - Better output than version 1.0. Now displays `Host: <host> Ports: <Port/TCP>` for easier parsing.
     - Try `./gortscanner <host(s)> <port(s)> | grep “Host:” | tee scan.out` for a nice easy to cut up report.
 
