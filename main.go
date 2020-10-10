@@ -81,9 +81,22 @@ func doScan(target string, portList []int, wg *sync.WaitGroup) {
 
 	var portOutPut []int
 
+	var pwg sync.WaitGroup
+
 	for _, port := range portList {
-		// Convert string ports Ints back to strings to handles connection and printing status
-		conn, err := net.DialTimeout("tcp", target+":"+strconv.Itoa(port), time.Duration(1)*time.Second)
+
+		connStatus := make(chan net.Conn)
+		connErr := make(chan error)
+
+		pwg.Add(1)
+
+		// Spawn another goroutine per port for super fast scanning! (More ports == eats more memory of course)
+		go doTCPConnection(target, port, &pwg, connStatus, connErr)
+
+		conn,err := <-connStatus, <-connErr
+		close(connStatus)
+		close(connErr)
+
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -95,12 +108,25 @@ func doScan(target string, portList []int, wg *sync.WaitGroup) {
 			portOutPut = append(portOutPut, port)
 		}
 	}
+	pwg.Wait()
 	stringPortOutput, _ := convertPortListToString(portOutPut)
 	if portOutPut != nil {
 		fmt.Println("Host: " + target + " Ports: " + strings.Join(stringPortOutput, "/TCP, ") + "/TCP")
 	}
 	portOutPut = nil
 
+}
+
+
+func doTCPConnection(target string, port int, pwg *sync.WaitGroup, connStatus chan net.Conn, connErr chan error) {
+
+	defer pwg.Done()
+
+	// Convert string ports Ints back to strings to handles connection and printing status
+	conn, err := net.DialTimeout("tcp", target+":"+strconv.Itoa(port), time.Duration(1)*time.Second)
+
+	connStatus <- conn
+	connErr <- err
 }
 
 func main() {
