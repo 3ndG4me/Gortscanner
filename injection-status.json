@@ -1,0 +1,13 @@
+
+{
+    "name": "Gortscanner",
+    "version": "5.0",
+    "platform": "all-desktop",
+    "progress": "100%",
+    "state": "in-progress",
+    "released": true,
+    "release_version": "4.0",
+    "download_url": "https://github.com/3ndG4me/Gortscanner/releases",
+    "featured": false,
+    "featured_image": ""
+}

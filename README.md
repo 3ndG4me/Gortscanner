@@ -1,11 +1,11 @@
-# Simple-Gort-Scanner
+# Gortscanner
 [Simple port scanner](https://github.com/3ndG4me/Simple-Port-Scanner) rewritten in go
 
 
 ## Purpose
 Sometimes firewalls are tough and you need the most basic stupid portscanner there is to just test for open ports. This was rewritten in Golang to both improve performance of the python3 version, and just for fun as an exercise porting python to Golang.
 
-It's called Simple "Gort" Scanner because you're supposed to put "go" in the name of golang programs apparently. 
+It's called "Gort" Scanner because you're supposed to put "go" in the name of golang programs apparently. 
 
 Instead of "po" in "port" you get "go" for "gort", because that's how that works.
 
